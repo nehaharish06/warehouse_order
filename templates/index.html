@@ -83,12 +83,12 @@ function showTable(type) {
 
     setOrderHeader();
 
-    data[type].forEach(row => {
+    orderData[type].forEach(row => {
         table.innerHTML += `
             <tr>
                 <td>${row.order_id}</td>
                 <td>${row.product_id}</td>
-                <td>${row.quantity}</td>
+                <td>${row.requested_qty}</td>
                 <td>${row.fulfilled_qty}</td>
                 <td>${row.status}</td>
             </tr>
@@ -110,7 +110,7 @@ function showStock() {
 
     setStockHeader();
 
-    data.stock.forEach(row => {
+    orderData.stock.forEach(row => {
         table.innerHTML += `
             <tr>
                 <td>${row.product_id}</td>

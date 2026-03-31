@@ -14,6 +14,9 @@ class TestWarehouseEngine(unittest.TestCase):
 
         self.engine = WarehouseEngine(self.products)
 
+    # -------------------------------
+    # TEST 1: INVALID PRODUCT
+    # -------------------------------
     def test_invalid_product_rejected(self):
         orders = pd.DataFrame([{
             "order_id": 1,
@@ -22,9 +25,14 @@ class TestWarehouseEngine(unittest.TestCase):
             "order_date": "2024-01-01"
         }])
 
-        report = self.engine.process_orders(orders)
-        self.assertEqual(report.iloc[0]['status'], "REJECTED")
+        fulfilled, partial, rejected = self.engine.process_orders(orders)
 
+        self.assertFalse(rejected.empty)
+        self.assertEqual(rejected.iloc[0]['status'], "REJECTED")
+
+    # -------------------------------
+    # TEST 2: NEGATIVE QUANTITY
+    # -------------------------------
     def test_negative_quantity_rejected(self):
         orders = pd.DataFrame([{
             "order_id": 2,
@@ -33,9 +41,14 @@ class TestWarehouseEngine(unittest.TestCase):
             "order_date": "2024-01-01"
         }])
 
-        report = self.engine.process_orders(orders)
-        self.assertEqual(report.iloc[0]['status'], "REJECTED")
+        fulfilled, partial, rejected = self.engine.process_orders(orders)
 
+        self.assertFalse(rejected.empty)
+        self.assertEqual(rejected.iloc[0]['status'], "REJECTED")
+
+    # -------------------------------
+    # TEST 3: STOCK DEDUCTION
+    # -------------------------------
     def test_stock_deduction(self):
         orders = pd.DataFrame([{
             "order_id": 3,
@@ -48,9 +61,13 @@ class TestWarehouseEngine(unittest.TestCase):
         remaining = self.engine.get_remaining_stock()
 
         self.assertEqual(
-            remaining.loc[remaining['product_id'] == 1, 'available_stock'].values[0], 5
+            remaining.loc[remaining['product_id'] == 1, 'available_stock'].values[0],
+            5
         )
 
+    # -------------------------------
+    # TEST 4: PARTIAL FULFILLMENT
+    # -------------------------------
     def test_partial_fulfillment(self):
         orders = pd.DataFrame([{
             "order_id": 4,
@@ -59,9 +76,14 @@ class TestWarehouseEngine(unittest.TestCase):
             "order_date": "2024-01-01"
         }])
 
-        report = self.engine.process_orders(orders)
-        self.assertEqual(report.iloc[0]['status'], "PARTIAL")
+        fulfilled, partial, rejected = self.engine.process_orders(orders)
 
+        self.assertFalse(partial.empty)
+        self.assertEqual(partial.iloc[0]['status'], "PARTIAL")
+
+    # -------------------------------
+    # TEST 5: FULL FULFILLMENT
+    # -------------------------------
     def test_full_fulfillment(self):
         orders = pd.DataFrame([{
             "order_id": 5,
@@ -70,8 +92,10 @@ class TestWarehouseEngine(unittest.TestCase):
             "order_date": "2024-01-01"
         }])
 
-        report = self.engine.process_orders(orders)
-        self.assertEqual(report.iloc[0]['status'], "FULFILLED")
+        fulfilled, partial, rejected = self.engine.process_orders(orders)
+
+        self.assertFalse(fulfilled.empty)
+        self.assertEqual(fulfilled.iloc[0]['status'], "FULFILLED")
 
 
 if __name__ == "__main__":
