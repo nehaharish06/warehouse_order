@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Warehouse Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+
+<h1>📦 Warehouse Dashboard</h1>
+
+<a href="/process">
+    <button class="main-btn">Process Orders</button>
+</a>
+
+{% if summary %}
+
+<div class="cards">
+    <div class="card fulfilled" onclick="showTable('fulfilled')">
+        <h3>Fulfilled</h3>
+        <p>{{ summary.fulfilled }}</p>
+    </div>
+
+    <div class="card partial" onclick="showTable('partial')">
+        <h3>Partial</h3>
+        <p>{{ summary.partial }}</p>
+    </div>
+
+    <div class="card rejected" onclick="showTable('rejected')">
+        <h3>Rejected</h3>
+        <p>{{ summary.rejected }}</p>
+    </div>
+
+    <div class="card stock-card" onclick="showStock()">
+        <h3>Stock Remaining</h3>
+        <p>{{ summary.stock_remaining }}</p>
+    </div>
+</div>
+
+<div id="table-section" style="display:none;">
+    <h2 id="table-title"></h2>
+
+    <button id="download-btn">Download CSV</button>
+
+    <table id="data-table">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+const data = {{ data | tojson | safe if data else '{}' }};
+
+// Order table header
+function setOrderHeader() {
+    document.querySelector("#data-table thead").innerHTML = `
+        <tr>
+            <th>Order ID</th>
+            <th>Product ID</th>
+            <th>Requested</th>
+            <th>Fulfilled</th>
+            <th>Status</th>
+        </tr>
+    `;
+}
+
+// Stock table header
+function setStockHeader() {
+    document.querySelector("#data-table thead").innerHTML = `
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Stock Left</th>
+            <th>Price</th>
+        </tr>
+    `;
+}
+
+// Orders
+function showTable(type) {
+    const table = document.querySelector("#data-table tbody");
+    table.innerHTML = "";
+
+    setOrderHeader();
+
+    orderData[type].forEach(row => {
+        table.innerHTML += `
+            <tr>
+                <td>${row.order_id}</td>
+                <td>${row.product_id}</td>
+                <td>${row.requested_qty}</td>
+                <td>${row.fulfilled_qty}</td>
+                <td>${row.status}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("table-section").style.display = "block";
+    document.getElementById("table-title").innerText = type.toUpperCase();
+
+    document.getElementById("download-btn").onclick = () => {
+        window.location.href = "/download/" + type;
+    };
+}
+
+// Stock
+function showStock() {
+    const table = document.querySelector("#data-table tbody");
+    table.innerHTML = "";
+
+    setStockHeader();
+
+    orderData.stock.forEach(row => {
+        table.innerHTML += `
+            <tr>
+                <td>${row.product_id}</td>
+                <td>${row.product_name}</td>
+                <td>${row.available_stock}</td>
+                <td>$${row.price}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("table-section").style.display = "block";
+    document.getElementById("table-title").innerText = "STOCK";
+
+    document.getElementById("download-btn").onclick = () => {
+        window.location.href = "/download/stock";
+    };
+}
+</script>
+
+{% endif %}
+
+</body>
+</html>

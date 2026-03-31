@@ -1,0 +1,80 @@
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+.main-btn {
+    padding: 12px 25px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    margin: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 180px;
+    padding: 20px;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.fulfilled { background: #28a745; }
+.partial { background: #ffc107; color: black; }
+.rejected { background: #dc3545; }
+
+table {
+    margin: 20px auto;
+    width: 80%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background: #333;
+    color: white;
+}
+
+#download-btn {
+    margin: 10px;
+    padding: 10px 20px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.card:nth-child(4) {
+    background: #6c5ce7;
+}
+.stock-card {
+    background: linear-gradient(135deg, #00b894, #55efc4);
+}
+
+body {
+    background: linear-gradient(to right, #ffe6f0, #ffe6ff);
+}

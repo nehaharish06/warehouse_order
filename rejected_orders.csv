@@ -1,0 +1,4 @@
+order_id,product_id,requested_qty,fulfilled_qty,status
+O006,P006,-5,0,REJECTED
+O007,P007,2,0,REJECTED
+O008,P005,10,0,REJECTED
